@@ -192,6 +192,8 @@ function sendJoin(
 	clientId: string,
 	producer: core.IProducer,
 ) {
+	console.log("==========>>>>>>>>>Sending join message");
+	
 	const detail: IClient = {
 		mode: "write",
 		permission: [],
