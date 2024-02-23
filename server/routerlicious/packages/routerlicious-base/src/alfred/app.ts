@@ -55,6 +55,8 @@ export function create(
 	clusterDrainingChecker?: IClusterDrainingChecker,
 	enableClientIPLogging?: boolean,
 ) {
+	console.log("Creating Alfred app");
+	
 	// Maximum REST request size
 	const requestSize = config.get("alfred:restJsonSize");
 	const enableLatencyMetric = config.get("alfred:enableLatencyMetric") ?? false;
