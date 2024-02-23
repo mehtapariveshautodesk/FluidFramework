@@ -146,6 +146,8 @@ export function create(
 		),
 		verifyStorageToken(tenantManager, config, defaultTokenValidationOptions),
 		(request, response, next) => {
+			console.log("GET /:tenantId/:id", "Alfred Called ****************");
+			
 			let from = stringToSequenceNumber(request.query.from);
 			let to = stringToSequenceNumber(request.query.to);
 			if (from === undefined && to === undefined) {
