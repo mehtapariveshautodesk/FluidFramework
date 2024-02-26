@@ -471,6 +471,8 @@ export function configureWebSocketServices(
 					clientId,
 					messageClient as IClient,
 				);
+				console.log("Client Added in Redis in WS********");
+				
 				connectDocumentAddClientMetric.success("Successfully added client");
 			} catch (err) {
 				const errMsg = `Could not add client. Error: ${safeStringify(err, undefined, 2)}`;
@@ -753,6 +755,8 @@ export function configureWebSocketServices(
 					`Disconnect of ${clientId} from room`,
 					getLumberBaseProperties(room.documentId, room.tenantId),
 				);
+				console.log("Client Removed from Redis in WS********");
+				
 				removeAndStoreP.push(
 					clientManager
 						.removeClient(room.tenantId, room.documentId, clientId)
