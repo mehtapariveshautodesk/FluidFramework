@@ -45,6 +45,7 @@ export class ClientManager implements IClientManager {
 		const key = this.getKey(tenantId, documentId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId);
 		console.log('audience+client ********',audienceKey+clientId);
+		console.log('TimeoutMap ***********', this.timeoutIdMap);
 		
 		clearTimeout(this.timeoutIdMap.get(audienceKey+clientId));
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
@@ -64,6 +65,7 @@ export class ClientManager implements IClientManager {
 			await this.client.hdel(audienceKey, clientId);
 		}, 5000);
 		this.timeoutIdMap.set(audienceKey+clientId, timeoutId);
+		console.log('TimeoutMap ***********', this.timeoutIdMap);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
