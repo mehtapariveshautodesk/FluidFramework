@@ -17,6 +17,7 @@ import { Lumberjack } from "@fluidframework/server-services-telemetry";
 export class ClientManager implements IClientManager {
 	private readonly expireAfterSeconds: number = 60 * 60 * 24;
 	private readonly prefix: string = "client";
+	private timeoutIdMap: Map<string, NodeJS.Timeout> = new Map();
 
 	constructor(private readonly client: Redis.default, parameters?: IRedisParameters) {
 		if (parameters?.expireAfterSeconds) {
@@ -43,6 +44,9 @@ export class ClientManager implements IClientManager {
 		
 		const key = this.getKey(tenantId, documentId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId);
+		console.log('audience+client ********',audienceKey+clientId);
+		
+		clearTimeout(this.timeoutIdMap.get(audienceKey+clientId));
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
 		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
@@ -54,7 +58,12 @@ export class ClientManager implements IClientManager {
 		clientId: string,
 	): Promise<void> {
 		console.log("Client Removed in Redis********", documentId, clientId);
-		await this.client.hdel(this.getAudienceKey(tenantId, documentId), clientId);
+		const audienceKey = this.getAudienceKey(tenantId, documentId)
+		console.log('audience+client ********',audienceKey+clientId);
+		const timeoutId =  setTimeout(async () => {
+			await this.client.hdel(audienceKey, clientId);
+		}, 5000);
+		this.timeoutIdMap.set(audienceKey+clientId, timeoutId);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
