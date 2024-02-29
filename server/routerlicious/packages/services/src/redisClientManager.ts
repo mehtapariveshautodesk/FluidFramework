@@ -39,6 +39,7 @@ export class ClientManager implements IClientManager {
 		clientId: string,
 		details: IClient,
 	): Promise<void> {
+		console.log("Client Added in Redis********");
 		const key = this.getKey(tenantId, documentId);
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
@@ -49,6 +50,8 @@ export class ClientManager implements IClientManager {
 		documentId: string,
 		clientId: string,
 	): Promise<void> {
+		console.log("Client Removed in Redis********");
+		
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
