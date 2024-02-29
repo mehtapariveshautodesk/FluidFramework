@@ -49,6 +49,7 @@ export class ClientManager implements IClientManager {
 		console.log('Client Added###########', clientId);
 		clearTimeout(this.timeoutIdMap.get(audienceKey+clientId));
 		this.timeoutIdMap.delete(audienceKey+clientId);
+		console.log('TimeoutMap2 ***********', this.timeoutIdMap);
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
 		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
