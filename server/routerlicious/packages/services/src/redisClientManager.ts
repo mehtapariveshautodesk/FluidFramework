@@ -39,9 +39,12 @@ export class ClientManager implements IClientManager {
 		clientId: string,
 		details: IClient,
 	): Promise<void> {
-		console.log("Client Added in Redis********");
+		console.log("Client Added in Redis****", documentId, clientId, details);
+		
 		const key = this.getKey(tenantId, documentId);
+		const audienceKey = this.getAudienceKey(tenantId, documentId);
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
+		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
 	}
 
@@ -50,8 +53,8 @@ export class ClientManager implements IClientManager {
 		documentId: string,
 		clientId: string,
 	): Promise<void> {
-		console.log("Client Removed in Redis********");
-		
+		console.log("Client Removed in Redis********", documentId, clientId);
+		await this.client.hdel(this.getAudienceKey(tenantId, documentId), clientId);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
@@ -95,5 +98,9 @@ export class ClientManager implements IClientManager {
 
 	private getKey(tenantId: string, documentId: string): string {
 		return `${this.prefix}:${tenantId}:${documentId}`;
+	}
+
+	private getAudienceKey(tenantId: string, documentId: string): string {
+		return `audience:${this.prefix}:${tenantId}:${documentId}`;
 	}
 }
