@@ -44,11 +44,13 @@ export class ClientManager implements IClientManager {
 		
 		const key = this.getKey(tenantId, documentId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId);
-		console.log('audience+client ********',audienceKey+clientId);
+		console.log('audience+client ********',audienceKey);
 		console.log('TimeoutMap ***********', this.timeoutIdMap);
 		console.log('Client Added###########', clientId);
-		clearTimeout(this.timeoutIdMap.get(audienceKey+clientId));
-		this.timeoutIdMap.delete(audienceKey+clientId);
+		clearTimeout(this.timeoutIdMap.get(audienceKey));
+		console.log('Timeout Cleared#########', audienceKey, new Date().toISOString());;
+		
+		this.timeoutIdMap.delete(audienceKey);
 		console.log('TimeoutMap2 ***********', this.timeoutIdMap);
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
 		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
@@ -62,11 +64,14 @@ export class ClientManager implements IClientManager {
 	): Promise<void> {
 		console.log("Client Removed in Redis********", documentId, clientId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId)
-		console.log('audience+client ********',audienceKey+clientId);
+		console.log('audience+client ********',audienceKey);
 		const timeoutId =  setTimeout(async () => {
-			console.log('Client Deleted#########', clientId);
+			console.log('Client Deleted#########', clientId, new Date().toISOString());
 			await this.client.hdel(audienceKey, clientId);
+			this.timeoutIdMap.delete(audienceKey);
 		}, 5000);
+		console.log('Timeout Scheduled for ', clientId, new Date().toISOString());
+		
 		this.timeoutIdMap.set(audienceKey+clientId, timeoutId);
 		console.log('TimeoutMap ***********', this.timeoutIdMap);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
