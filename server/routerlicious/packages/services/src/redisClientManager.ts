@@ -72,7 +72,7 @@ export class ClientManager implements IClientManager {
 		}, 5000);
 		console.log('Timeout Scheduled for ', clientId, new Date().toISOString());
 		
-		this.timeoutIdMap.set(audienceKey+clientId, timeoutId);
+		this.timeoutIdMap.set(audienceKey, timeoutId);
 		console.log('TimeoutMap ***********', this.timeoutIdMap);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
