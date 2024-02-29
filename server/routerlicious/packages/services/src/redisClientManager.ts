@@ -17,7 +17,7 @@ import { Lumberjack } from "@fluidframework/server-services-telemetry";
 export class ClientManager implements IClientManager {
 	private readonly expireAfterSeconds: number = 60 * 60 * 24;
 	private readonly prefix: string = "client";
-	private timeoutIdMap: Map<string, NodeJS.Timeout> = new Map();
+	// private timeoutIdMap: Map<string, NodeJS.Timeout> = new Map();
 
 	constructor(private readonly client: Redis.default, parameters?: IRedisParameters) {
 		if (parameters?.expireAfterSeconds) {
@@ -45,13 +45,13 @@ export class ClientManager implements IClientManager {
 		const key = this.getKey(tenantId, documentId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId);
 		console.log('audience+client ********',audienceKey);
-		console.log('TimeoutMap ***********', this.timeoutIdMap);
+		// console.log('TimeoutMap ***********', this.timeoutIdMap);
 		console.log('Client Added###########', clientId);
-		clearTimeout(this.timeoutIdMap.get(audienceKey));
-		console.log('Timeout Cleared#########', audienceKey, new Date().toISOString());;
+		// clearTimeout(this.timeoutIdMap.get(audienceKey));
+		// console.log('Timeout Cleared#########', audienceKey, new Date().toISOString());;
 		
-		this.timeoutIdMap.delete(audienceKey);
-		console.log('TimeoutMap2 ***********', this.timeoutIdMap);
+		// this.timeoutIdMap.delete(audienceKey);
+		// console.log('TimeoutMap2 ***********', this.timeoutIdMap);
 		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
 		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
@@ -65,15 +65,15 @@ export class ClientManager implements IClientManager {
 		console.log("Client Removed in Redis********", documentId, clientId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId)
 		console.log('audience+client ********',audienceKey);
-		const timeoutId =  setTimeout(async () => {
+		setTimeout(async () => {
 			console.log('Client Deleted#########', clientId, new Date().toISOString());
 			await this.client.hdel(audienceKey, clientId);
-			this.timeoutIdMap.delete(audienceKey);
-		}, 5000);
+			// this.timeoutIdMap.delete(audienceKey);
+		}, 2000);
 		console.log('Timeout Scheduled for ', clientId, new Date().toISOString());
 		
-		this.timeoutIdMap.set(audienceKey, timeoutId);
-		console.log('TimeoutMap ***********', this.timeoutIdMap);
+		// this.timeoutIdMap.set(audienceKey, timeoutId);
+		// console.log('TimeoutMap ***********', this.timeoutIdMap);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
