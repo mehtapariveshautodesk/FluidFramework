@@ -65,6 +65,7 @@ export class ClientManager implements IClientManager {
 		console.log("Client Removed in Redis********", documentId, clientId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId)
 		console.log('audience+client ********',audienceKey);
+		// eslint-disable-next-line @typescript-eslint/no-misused-promises
 		setTimeout(async () => {
 			console.log('Client Deleted#########', clientId, new Date().toISOString());
 			await this.client.hdel(audienceKey, clientId);
