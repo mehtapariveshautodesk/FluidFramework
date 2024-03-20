@@ -17,7 +17,6 @@ import { Lumberjack } from "@fluidframework/server-services-telemetry";
 export class ClientManager implements IClientManager {
 	private readonly expireAfterSeconds: number = 60 * 60 * 24;
 	private readonly prefix: string = "client";
-	// private timeoutIdMap: Map<string, NodeJS.Timeout> = new Map();
 
 	constructor(private readonly client: Redis.default, parameters?: IRedisParameters) {
 		if (parameters?.expireAfterSeconds) {
@@ -40,20 +39,11 @@ export class ClientManager implements IClientManager {
 		clientId: string,
 		details: IClient,
 	): Promise<void> {
-		console.log("Client Added in Redis****", documentId, clientId, details);
-		
 		const key = this.getKey(tenantId, documentId);
 		const audienceKey = this.getAudienceKey(tenantId, documentId);
-		console.log('audience+client ********',audienceKey);
-		// console.log('TimeoutMap ***********', this.timeoutIdMap);
-		console.log('Client Added###########', clientId);
-		// clearTimeout(this.timeoutIdMap.get(audienceKey));
-		// console.log('Timeout Cleared#########', audienceKey, new Date().toISOString());;
-		
-		// this.timeoutIdMap.delete(audienceKey);
-		// console.log('TimeoutMap2 ***********', this.timeoutIdMap);
-		const data: { [key: string]: any } = { [clientId]: JSON.stringify(details) };
-		await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
+		const data = { [clientId]: JSON.stringify(details) };
+        console.log(`Adding client ${clientId} to ${audienceKey}`);
+        await executeRedisMultiWithHmsetExpire(this.client, audienceKey, data, this.expireAfterSeconds);
 		return executeRedisMultiWithHmsetExpire(this.client, key, data, this.expireAfterSeconds);
 	}
 
@@ -62,19 +52,12 @@ export class ClientManager implements IClientManager {
 		documentId: string,
 		clientId: string,
 	): Promise<void> {
-		console.log("Client Removed in Redis********", documentId, clientId);
-		const audienceKey = this.getAudienceKey(tenantId, documentId)
-		console.log('audience+client ********',audienceKey);
-		// eslint-disable-next-line @typescript-eslint/no-misused-promises
-		setTimeout(async () => {
-			console.log('Client Deleted#########', clientId, new Date().toISOString());
-			await this.client.hdel(audienceKey, clientId);
-			// this.timeoutIdMap.delete(audienceKey);
-		}, 2000);
-		console.log('Timeout Scheduled for ', clientId, new Date().toISOString());
-		
-		// this.timeoutIdMap.set(audienceKey, timeoutId);
-		// console.log('TimeoutMap ***********', this.timeoutIdMap);
+		const audienceKey = this.getAudienceKey(tenantId, documentId);
+		console.log(`Removing client ${clientId} from ${audienceKey}`);
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        setTimeout(async () => {
+            await this.client.hdel(audienceKey, clientId);
+        }, 3000);
 		await this.client.hdel(this.getKey(tenantId, documentId), clientId);
 	}
 
@@ -120,7 +103,7 @@ export class ClientManager implements IClientManager {
 		return `${this.prefix}:${tenantId}:${documentId}`;
 	}
 
-	private getAudienceKey(tenantId: string, documentId: string): string {
-		return `audience:${this.prefix}:${tenantId}:${documentId}`;
-	}
+	private getAudienceKey(tenantId, documentId) {
+        return `audience:${this.prefix}:${tenantId}:${documentId}`;
+    }
 }
