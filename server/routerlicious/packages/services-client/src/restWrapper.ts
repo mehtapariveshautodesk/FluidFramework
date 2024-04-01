@@ -204,16 +204,28 @@ export class BasicRestWrapper extends RestWrapper {
 
 						this.request<T>(retryConfig, statusCode, false).then(resolve).catch(reject);
 					} else {
+						const errorSourceMessage = `[${error?.config?.method ?? ""}] request to [${
+							error?.config?.baseURL ?? options.baseURL ?? ""
+						}] failed with [${error.response?.status}] status code`;
 						// From https://axios-http.com/docs/handling_errors
 						if (error?.response) {
 							// The request was made and the server responded with a status code
 							// that falls out of the range of 2xx
-							reject(
-								createFluidServiceNetworkError(
-									error?.response?.status,
-									error?.response?.data,
-								),
-							);
+							if (typeof error?.response?.data === "string") {
+								reject(
+									createFluidServiceNetworkError(error?.response?.status, {
+										message: error?.response?.data,
+										source: errorSourceMessage,
+									}),
+								);
+							} else {
+								reject(
+									createFluidServiceNetworkError(error?.response?.status, {
+										...error?.response?.data,
+										source: errorSourceMessage,
+									}),
+								);
+							}
 						} else if (error?.request) {
 							// The request was made but no response was received. That can happen if a service is
 							// temporarily down or inaccessible due to network failures. We leverage that in here
@@ -222,7 +234,8 @@ export class BasicRestWrapper extends RestWrapper {
 							reject(
 								createFluidServiceNetworkError(
 									502,
-									`Network Error: ${error?.message ?? "undefined"}`,
+									{message: `Network Error: ${error?.message ?? "undefined"}`,
+									source: errorSourceMessage},
 								),
 							);
 						} else {
@@ -231,6 +244,7 @@ export class BasicRestWrapper extends RestWrapper {
 								canRetry: false,
 								isFatal: false,
 								message: error?.message ?? "Unknown Error",
+								source: errorSourceMessage,
 							};
 							reject(createFluidServiceNetworkError(500, details));
 						}

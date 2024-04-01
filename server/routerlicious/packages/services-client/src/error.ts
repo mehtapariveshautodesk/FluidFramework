@@ -32,6 +32,11 @@ export interface INetworkErrorDetails {
 	 * Refer to {@link NetworkError.retryAfterMs}.
 	 */
 	retryAfterMs?: number;
+	/**
+	 * Indicates the source where the network error is triggered from. It can contain a message or a stack trace.
+	 * Refer to {@link NetworkError.source}.
+	 */
+	source?: string;
 }
 
 /**
@@ -79,6 +84,11 @@ export class NetworkError extends Error {
 		 * @public
 		 */
 		public readonly retryAfterMs?: number,
+		/**
+		 * Optional value indicating the source where the network error is triggered from. It can contain a message or a stack trace.
+		 * @public
+		 */
+		public readonly source?: string,
 	) {
 		super(message);
 		this.name = "NetworkError";
@@ -95,7 +105,8 @@ export class NetworkError extends Error {
 		if (
 			this.canRetry === undefined &&
 			this.isFatal === undefined &&
-			this.retryAfterMs === undefined
+			this.retryAfterMs === undefined &&
+			this.source === undefined
 		) {
 			return this.message;
 		}
@@ -106,6 +117,7 @@ export class NetworkError extends Error {
 			isFatal: this.isFatal,
 			retryAfter: this.retryAfter,
 			retryAfterMs: this.retryAfterMs,
+			source: this.source,
 		};
 	}
 
@@ -121,6 +133,7 @@ export class NetworkError extends Error {
 			isFatal: this.isFatal,
 			retryAfterMs: this.retryAfterMs,
 			retryAfter: this.retryAfter,
+			source: this.source,
 		};
 	}
 }
@@ -152,12 +165,14 @@ export function createFluidServiceNetworkError(
 	let canRetry: boolean | undefined;
 	let isFatal: boolean | undefined;
 	let retryAfter: number | undefined;
+	let source: string | undefined;
 
 	if (errorData && typeof errorData === "object") {
 		message = errorData.message ?? "Unknown Error";
 		canRetry = errorData.canRetry;
 		isFatal = errorData.isFatal;
 		retryAfter = errorData.retryAfter;
+		source = errorData.source;
 	} else if (errorData && typeof errorData === "string") {
 		message = errorData;
 	} else {
@@ -168,7 +183,7 @@ export function createFluidServiceNetworkError(
 		case 401:
 		case 403:
 		case 404:
-			return new NetworkError(statusCode, message, false /* canRetry */, false); /* isFatal */
+			return new NetworkError(statusCode, message, false /* canRetry */, false, undefined, source); /* isFatal */
 		case 413:
 		case 422:
 			return new NetworkError(
@@ -177,6 +192,7 @@ export function createFluidServiceNetworkError(
 				canRetry ?? false /* canRetry */,
 				isFatal ?? false /* isFatal */,
 				canRetry ? retryAfter : undefined,
+				source,
 			);
 		case 429:
 			return new NetworkError(
@@ -185,6 +201,7 @@ export function createFluidServiceNetworkError(
 				true /* canRetry */,
 				false /* isFatal */,
 				retryAfter,
+				source,
 			);
 		case 500: {
 			return new NetworkError(
@@ -193,6 +210,7 @@ export function createFluidServiceNetworkError(
 				canRetry ?? true /* canRetry */,
 				isFatal ?? false /* isFatal */,
 				canRetry ? retryAfter : undefined,
+				source,
 			);
 		}
 		case 502:
@@ -204,9 +222,10 @@ export function createFluidServiceNetworkError(
 				true /* canRetry */,
 				false /* isFatal */,
 				retryAfter,
+				source,
 			);
 		default:
-			return new NetworkError(statusCode, message, false /* canRetry */, true); /* isFatal */
+			return new NetworkError(statusCode, message, false /* canRetry */, true, undefined, source); /* isFatal */
 	}
 }
 
