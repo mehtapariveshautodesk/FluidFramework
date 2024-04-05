@@ -55,7 +55,7 @@
 		"@fluidframework/gitresources": "^2.0.0-190573",
 		"@fluidframework/protocol-definitions": "^1.1.0",
 		"@fluidframework/server-services": "^2.0.0-190573",
-		"@fluidframework/server-services-client": "../../../routerlicious/packages/services-client/fluidframework-server-services-client-2.0.1.tgz",
+		"@fluidframework/server-services-client": "^2.0.0-190573",
 		"@fluidframework/server-services-core": "^2.0.0-190573",
 		"@fluidframework/server-services-shared": "^2.0.0-190573",
 		"@fluidframework/server-services-telemetry": "^2.0.0-190573",
