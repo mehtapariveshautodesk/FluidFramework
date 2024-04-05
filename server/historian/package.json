@@ -11,7 +11,7 @@
 	"license": "MIT",
 	"author": "Microsoft and contributors",
 	"scripts": {
-		"build": "npm run build:genver && npm run build:compile && npm run lint",
+		"build": "npm run build:genver && npm run build:compile",
 		"build:compile": "pnpm run -r --stream build:compile",
 		"build:genver": "pnpm run -r --no-sort --stream --no-bail build:genver",
 		"ci:eslint": "pnpm run -r --no-sort --stream --no-bail eslint",

@@ -6,13 +6,13 @@
 import { AsyncLocalStorage } from "async_hooks";
 import { ITenantConfig, ITenantConfigManager } from "@fluidframework/server-services-core";
 import { getCorrelationId } from "@fluidframework/server-services-utils";
-import { BasicRestWrapper, RestWrapper } from "@fluidframework/server-services-client";
 import * as uuid from "uuid";
 import * as winston from "winston";
 import { BaseTelemetryProperties, Lumberjack } from "@fluidframework/server-services-telemetry";
 import { getRequestErrorTranslator, getTokenLifetimeInSec } from "../utils";
 import { ITenantService } from "./definitions";
 import { RedisTenantCache } from "./redisTenantCache";
+import { BasicRestWrapper, RestWrapper } from "../restWrapper/restWrapper";
 
 export class RiddlerService implements ITenantService, ITenantConfigManager {
 	private readonly restWrapper: RestWrapper;

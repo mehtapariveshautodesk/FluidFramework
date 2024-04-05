@@ -13,8 +13,6 @@ import {
 	IPatchRefParamsExternal,
 	IWholeSummaryPayload,
 	IWriteSummaryResponse,
-	BasicRestWrapper,
-	RestWrapper,
 	IWholeFlatSummary,
 	IWholeSummaryPayloadType,
 	LatestSummaryId,
@@ -26,6 +24,7 @@ import { getCorrelationId } from "@fluidframework/server-services-utils";
 import { BaseTelemetryProperties, Lumberjack } from "@fluidframework/server-services-telemetry";
 import { Constants, getRequestErrorTranslator } from "../utils";
 import { ICache } from "./definitions";
+import { BasicRestWrapper, RestWrapper } from "../restWrapper/restWrapper";
 
 // We include the historian version in the user-agent string
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
