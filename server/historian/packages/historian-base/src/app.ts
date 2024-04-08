@@ -25,6 +25,7 @@ import { RestLessServer } from "@fluidframework/server-services-shared";
 import * as routes from "./routes";
 import { ICache, IDenyList, ITenantService } from "./services";
 import { Constants, getDocumentIdFromRequest, getTenantIdFromRequest } from "./utils";
+import * as winston from "winston";
 
 export function create(
 	config: nconf.Provider,
@@ -120,6 +121,8 @@ export function create(
 	if (app.get("env") === "development") {
 		app.use((err, req, res, next) => {
 			res.status(err.status || 500);
+			winston.error(`Error Code: ${err.code}, Error Statue: ${err.status}, Error Message: ${err.message}, Error: ${err}`)
+			
 			res.json({
 				error: err,
 				message: err.message,
@@ -130,6 +133,7 @@ export function create(
 	// production error handler
 	// no stacktraces leaked to user
 	app.use((err, req, res, next) => {
+		winston.error(`Error Code: ${err.code}, Error Statue: ${err.status}, Error Message: ${err.message}, Error: ${err}`)
 		res.status(err.status || 500);
 		res.json({
 			error: {},

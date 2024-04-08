@@ -85,6 +85,7 @@ export class HistorianRunner implements IRunner {
 	 */
 
 	private onError(error) {
+		winston.error(`Error Code: ${error.code}, Error Statue: ${error.status} Error Message: ${error.message}, Error: ${error}`);
 		if (error.syscall !== "listen") {
 			throw error;
 		}
