@@ -502,6 +502,7 @@ async function executeRedisFsApi<T>(
 		metric.success(`${metricName}: ${apiName} success`);
 		return result;
 	} catch (error: any) {
+		Lumberjack.error(`Error Code: ${error.code}, Error Status: ${error.status}, Error Message: ${error.message}, Error: ${error}`);
 		metric.error(`${metricName}: ${apiName} error`, error);
 		throw error;
 	}

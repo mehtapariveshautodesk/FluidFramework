@@ -65,6 +65,7 @@ export class GitrestRunner implements IRunner {
 	 */
 
 	private onError(error) {
+		Lumberjack.error(`Error Code: ${error.code}, Error Status: ${error.status}, Error: ${error}` );
 		if (error.syscall !== "listen") {
 			throw error;
 		}

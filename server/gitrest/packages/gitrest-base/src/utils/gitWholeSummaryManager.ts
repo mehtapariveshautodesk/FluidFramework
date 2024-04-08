@@ -407,6 +407,7 @@ export class GitWholeSummaryManager {
 				blobs,
 			};
 		} catch (error: any) {
+			Lumberjack.error(`Error Code: ${error.code}, Error Status: ${error.status}, Error Message: ${error.message}, Error: ${error}`);
 			readSummaryMetric.error("GitWholeSummaryManager failed to read summary", error);
 			throw error;
 		}
@@ -481,6 +482,7 @@ export class GitWholeSummaryManager {
 			}
 			throw new NetworkError(400, `Unknown Summary Type: ${payload.type}`);
 		} catch (error: any) {
+			Lumberjack.error(`Error Code: ${error.code}, Error Status: ${error.status}, Error Message: ${error.message}, Error: ${error}`);
 			writeSummaryMetric.error("GitWholeSummaryManager failed to write summary", error);
 			throw error;
 		}

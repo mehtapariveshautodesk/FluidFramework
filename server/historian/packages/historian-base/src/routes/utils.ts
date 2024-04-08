@@ -19,6 +19,7 @@ import {
 	IDenyList,
 } from "../services";
 import { containsPathTraversal, parseToken } from "../utils";
+import winston from "winston";
 
 /**
  * Helper function to handle a promise that should be returned to the user.
@@ -225,6 +226,7 @@ export function verifyTokenNotRevoked(
 			}
 			next();
 		} catch (error) {
+			winston.error(`Error verifying token: ${error}`);
 			return handleResponse(Promise.reject(error), response);
 		}
 	};

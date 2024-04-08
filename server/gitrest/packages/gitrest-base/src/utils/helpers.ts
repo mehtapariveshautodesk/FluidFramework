@@ -170,6 +170,7 @@ export async function retrieveLatestFullSummaryFromStorage(
 		retrieveLatestFullSummaryMetric.success("Successfully read full summary from storage");
 		return summary;
 	} catch (error: any) {
+		Lumberjack.error(`Error Code: ${error.code}, Error Status: ${error.status}, Error Message: ${error.message}, Error: ${error}`);
 		if (error?.code === "ENOENT") {
 			retrieveLatestFullSummaryMetric.setProperty(
 				BaseGitRestTelemetryProperties.emptyFullSummary,

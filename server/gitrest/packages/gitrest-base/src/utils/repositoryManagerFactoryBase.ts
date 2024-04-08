@@ -286,6 +286,7 @@ export abstract class RepositoryManagerFactoryBase<TRepo> implements IRepository
 					return action();
 				});
 			} catch (e: any) {
+				Lumberjack.error(`Error Code: ${e.code}, Error Status: ${e.status}, Error Message: ${e.message}, Error: ${e}`);
 				if (e === E_TIMEOUT) {
 					throw new NetworkError(500, "Could not complete action due to mutex timeout.");
 				}
