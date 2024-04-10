@@ -293,6 +293,7 @@ export async function getRepoManagerFromWriteAPI(
 			error?.name === "NetworkError" &&
 			(error as NetworkError)?.code === 400
 		) {
+			console.log('CEDIT_LOGS_GITREST -> helpers: getRepoManagerFromWriteAPI : NetworkError : ', error);
 			return repoManagerFactory.create(repoManagerParams);
 		}
 		throw error;

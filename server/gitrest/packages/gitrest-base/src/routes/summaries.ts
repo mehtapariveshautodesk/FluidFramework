@@ -251,6 +251,7 @@ async function deleteSummary(
 				error?.code === 400 &&
 				error?.message.startsWith("Repo does not exist"))
 		) {
+			console.log("CEDIT_LOGS_GITREST -> Summaries:deleteSummary: Repo does not exist", error);
 			// File does not exist.
 			Lumberjack.warning(
 				"Tried to delete summary, but it does not exist",
@@ -323,7 +324,12 @@ export function create(
 					enforceStrictPersistedFullSummaryReads,
 				);
 			})
-			.catch((error) => logAndThrowApiError(error, request, repoManagerParams));
+			.catch((error) =>{
+				if (error.code === 400) {
+					console.log("CEDIT_LOGS -> Summaries:create: Repo does not exist", error);
+				}
+				 logAndThrowApiError(error, request, repoManagerParams)
+				});
 		handleResponse(resultP, response);
 	});
 
@@ -447,6 +453,8 @@ export function create(
 			.catch((error) => {
 				if (isNetworkError(error)) {
 					if (error.code === 400 && error.message.startsWith("Repo does not exist")) {
+						console.log("CEDIT_LOGS -> Summaries:create: Repo does not exist", error);
+						
 						// Document is already deleted, so there is nothing to do. This is a deletion success.
 						const lumberjackProperties = {
 							...getLumberjackBasePropertiesFromRepoManagerParams(repoManagerParams),
