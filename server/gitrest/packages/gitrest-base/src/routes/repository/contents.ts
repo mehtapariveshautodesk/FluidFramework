@@ -46,9 +46,9 @@ export function create(
 			})
 			.catch((error) =>{
 				if(error.code === "NotFoundError") {
-					console.log('CEDIT_LOGS_GITREST -> contents.ts : NotFoundError: ', error);
+					console.log('CEDIT_LOGS_GITREST_1 -> contents.ts : NotFoundError: ', error);
 				}else if(error.message == "Request failed"){
-					console.log('CEDIT_LOGS_GITREST -> contents.ts : Request failed: ', error);
+					console.log('CEDIT_LOGS_GITREST_2 -> contents.ts : Request failed: ', error);
 				}
 				 logAndThrowApiError(error, request, repoManagerParams)});
 		handleResponse(resultP, response);

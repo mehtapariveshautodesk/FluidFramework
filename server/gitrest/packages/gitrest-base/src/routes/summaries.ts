@@ -326,7 +326,7 @@ export function create(
 			})
 			.catch((error) =>{
 				if (error.code === 400) {
-					console.log("CEDIT_LOGS -> Summaries:create: Repo does not exist", error);
+					console.log("CEDIT_LOGS_GITREST_3 -> Summaries:create: Repo does not exist", error);
 				}
 				 logAndThrowApiError(error, request, repoManagerParams)
 				});
