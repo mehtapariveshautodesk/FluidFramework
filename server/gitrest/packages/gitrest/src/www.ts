@@ -20,3 +20,10 @@ runService(
 	"gitrest",
 	configPath,
 );
+
+process.on('uncaughtException', (error)=>{
+	console.error(`gitrest: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+	console.error(`gitrest: unhandledRejection`, error);
+})
