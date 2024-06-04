@@ -41,14 +41,6 @@ export async function deleteSummarizedOps(
 				doc.tenantId,
 				doc.documentId,
 			);
-			
-			if (realDoc === null) {
-				Lumberjack.error(
-					`Unable to delete ops. Reason: Failed to get latest checkpoint`,
-					lumberjackProperties,
-				);
-				continue;
-			}
 
 			const lastSummarySequenceNumber = JSON.parse(realDoc.scribe).lastSummarySequenceNumber;
 
@@ -88,7 +80,8 @@ export async function deleteSummarizedOps(
 				});
 			}
 		} catch (error) {
-			Lumberjack.error(`CEDIT_LOGS_5: Error while trying to delete ops`, lumberjackProperties, error);
+			Lumberjack.error(`Error while trying to delete ops`, lumberjackProperties, error);
+			throw error;
 		}
 	}
 }
