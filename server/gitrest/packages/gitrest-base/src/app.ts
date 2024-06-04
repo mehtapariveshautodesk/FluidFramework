@@ -118,3 +118,9 @@ export function create(
 
 	return app;
 }
+process.on('uncaughtException', (error)=>{
+    console.error(`gitrest-base: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+    console.error(`gitrest-base: unhandledRejection`, error);
+})

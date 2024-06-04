@@ -181,3 +181,9 @@ export async function create(
 	config.set("documentLambda", { create: deliCreate });
 	return createDocumentRouter(config, customizations);
 }
+process.on('uncaughtException', (error)=>{
+    console.error(`Deli: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+    console.error(`Deli: unhandledRejection`, error);
+})

@@ -20,3 +20,9 @@ runService(
 	"historian",
 	configPath,
 );
+process.on('uncaughtException', (error)=>{
+    console.error(`historian: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+    console.error(`historian: unhandledRejection`, error);
+})

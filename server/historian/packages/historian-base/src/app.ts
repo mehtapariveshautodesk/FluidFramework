@@ -143,3 +143,9 @@ export function create(
 
 	return app;
 }
+process.on('uncaughtException', (error)=>{
+    console.error(`historian: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+    console.error(`historian: unhandledRejection`, error);
+})

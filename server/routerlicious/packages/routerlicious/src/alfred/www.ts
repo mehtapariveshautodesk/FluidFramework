@@ -17,3 +17,9 @@ const configPath = path.join(__dirname, "../../config/config.json");
 configureLogging(configPath);
 
 runService(new AlfredResourcesFactory(), new AlfredRunnerFactory(), winston, "alfred", configPath);
+process.on('uncaughtException', (error)=>{
+    console.error(`Alfred: uncaughtException`, error);
+})
+process.on('unhandledRejection', (error)=>{
+    console.error(`Alfred: unhandledRejection`, error);
+})
