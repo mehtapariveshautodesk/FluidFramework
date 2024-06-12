@@ -29,6 +29,7 @@ export function create(
 		const resultP = repoManagerFactory
 			.open(repoManagerParams)
 			.then(async (repoManager) => {
+				console.log("REPO manager created successfully")
 				const fileSystemManagerFactory = getFilesystemManagerFactory(
 					fileSystemManagerFactories,
 					repoManagerParams.isEphemeralContainer,
@@ -45,7 +46,7 @@ export function create(
 				);
 				return repoManager.getContent(request.query.ref as string, request.params[0]);
 			})
-			.catch((error) => logAndThrowApiError(error, request, repoManagerParams));
+			.catch((error) => {console.log("FAILED to create repo manager");return logAndThrowApiError(error, request, repoManagerParams)});
 		handleResponse(resultP, response);
 	});
 

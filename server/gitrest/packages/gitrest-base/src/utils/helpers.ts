@@ -277,6 +277,7 @@ export async function getRepoManagerFromWriteAPI(
 	repoPerDocEnabled: boolean,
 	optimizeForInitialSummary?: boolean,
 ) {
+	console.log("Creating repo manager",{repoManagerFactory,repoManagerParams,repoPerDocEnabled,optimizeForInitialSummary})
 	if (optimizeForInitialSummary) {
 		return repoManagerFactory.create({ ...repoManagerParams, optimizeForInitialSummary });
 	}
